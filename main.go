@@ -2,9 +2,9 @@ package main
 
 import "fmt"
 
-const Circle int8 = -1
-const Empty int8 = 0
-const Cross int8 = 1
+const circle int8 = -1
+const empty int8 = 0
+const cross int8 = 1
 
 func max(a, b int32) int32 {
 	if a > b {
@@ -13,35 +13,35 @@ func max(a, b int32) int32 {
 	return b
 }
 
-type Game struct {
+type game struct {
 	board [9]int8
 	turn  int8
 }
 
-func (g *Game) init() {
+func (g *game) init() {
 	for idx := range g.board {
-		g.board[idx] = Empty
+		g.board[idx] = empty
 	}
-	g.turn = Circle
+	g.turn = circle
 }
 
-func (g *Game) get_input() {
+func (g *game) input() {
 	var tile int8
 	println("Please enter a tile(1-9): ")
 	_, err := fmt.Scan(&tile)
 	if err != nil {
 		fmt.Println(err)
 	}
-	g.set_tile(tile - 1)
+	g.setTitle(tile - 1)
 }
 
-func (g Game) print() {
+func (g game) print() {
 	println("-------------")
 	for idx, tile := range g.board {
-		if tile == Circle {
+		if tile == circle {
 			fmt.Print("| O ")
 		} else {
-			if tile == Cross {
+			if tile == cross {
 				fmt.Print("| X ")
 			} else {
 				fmt.Print("|   ")
@@ -54,16 +54,16 @@ func (g Game) print() {
 	}
 }
 
-func (g *Game) set_tile(cord int8) {
-	if g.board[cord] == Empty {
+func (g *game) setTitle(cord int8) {
+	if g.board[cord] == empty {
 		g.board[cord] = g.turn
 		g.turn *= -1
 	} else {
 		fmt.Println("Tile is already occupied")
 	}
 }
-func (g *Game) takeback(cord int8) {
-	if g.board[cord] != Empty {
+func (g *game) takeback(cord int8) {
+	if g.board[cord] != empty {
 		g.board[cord] = 0
 		g.turn *= -1
 	} else {
@@ -71,132 +71,132 @@ func (g *Game) takeback(cord int8) {
 	}
 }
 
-func (g Game) get_legal_moves() []int8 {
-	var legal_moves []int8
+func (g game) legalMoves() []int8 {
+	var legalMoves []int8
 	for idx, tile := range g.board {
-		if tile == Empty {
-			legal_moves = append(legal_moves, int8(idx))
+		if tile == empty {
+			legalMoves = append(legalMoves, int8(idx))
 		}
 	}
-	return legal_moves
+	return legalMoves
 }
 
-func (g Game) is_game_ended() bool {
-	row_start := [3]int8{0, 3, 6}
-	for _, tile := range row_start {
-		if g.board[tile] == g.board[tile+1] && g.board[tile] == g.board[tile+2] && g.board[tile] != Empty {
+func (g game) isGameEnded() bool {
+	rowStart := [3]int8{0, 3, 6}
+	for _, tile := range rowStart {
+		if g.board[tile] == g.board[tile+1] && g.board[tile] == g.board[tile+2] && g.board[tile] != empty {
 			return true
 		}
 	}
 	for tile := 0; tile < 3; tile++ {
-		if g.board[tile] == g.board[tile+3] && g.board[tile] == g.board[tile+6] && g.board[tile] != Empty {
+		if g.board[tile] == g.board[tile+3] && g.board[tile] == g.board[tile+6] && g.board[tile] != empty {
 			return true
 		}
 	}
-	if g.board[0] == g.board[4] && g.board[0] == g.board[8] && g.board[0] != Empty {
+	if g.board[0] == g.board[4] && g.board[0] == g.board[8] && g.board[0] != empty {
 		return true
 	}
-	if g.board[6] == g.board[4] && g.board[6] == g.board[2] && g.board[2] != Empty {
+	if g.board[6] == g.board[4] && g.board[6] == g.board[2] && g.board[2] != empty {
 		return true
 	}
-	legal_moves := g.get_legal_moves()
-	if len(legal_moves) == 0 {
+	legalMoves := g.legalMoves()
+	if len(legalMoves) == 0 {
 		return true
 	}
 	return false
 }
-func (g Game) get_result() int8 {
-	row_start := [3]int8{0, 3, 6}
-	for _, tile := range row_start {
-		if g.board[tile] == g.board[tile+1] && g.board[tile] == g.board[tile+2] && g.board[tile] != Empty {
-			if g.board[tile] == Circle {
-				return Circle
+func (g game) result() int8 {
+	rowStart := [3]int8{0, 3, 6}
+	for _, tile := range rowStart {
+		if g.board[tile] == g.board[tile+1] && g.board[tile] == g.board[tile+2] && g.board[tile] != empty {
+			if g.board[tile] == circle {
+				return circle
 			} else {
-				return Cross
+				return cross
 			}
 		}
 	}
 	for tile := 0; tile < 3; tile++ {
-		if g.board[tile] == g.board[tile+3] && g.board[tile] == g.board[tile+6] && g.board[tile] != Empty {
-			if g.board[tile] == Circle {
-				return Circle
+		if g.board[tile] == g.board[tile+3] && g.board[tile] == g.board[tile+6] && g.board[tile] != empty {
+			if g.board[tile] == circle {
+				return circle
 			} else {
-				return Cross
+				return cross
 			}
 		}
 	}
-	if g.board[0] == g.board[4] && g.board[0] == g.board[8] && g.board[0] != Empty {
-		if g.board[0] == Circle {
-			return Circle
+	if g.board[0] == g.board[4] && g.board[0] == g.board[8] && g.board[0] != empty {
+		if g.board[0] == circle {
+			return circle
 		} else {
-			return Cross
+			return cross
 		}
 	}
-	if g.board[6] == g.board[4] && g.board[6] == g.board[2] && g.board[2] != Empty {
-		if g.board[6] == Circle {
-			return Circle
+	if g.board[6] == g.board[4] && g.board[6] == g.board[2] && g.board[2] != empty {
+		if g.board[6] == circle {
+			return circle
 		} else {
-			return Cross
+			return cross
 		}
 	}
-	return Empty
+	return empty
 }
 
-func (g Game) evaluate() int32 {
-	result := g.get_result()
-	if result == Circle {
+func (g game) evaluate() int32 {
+	result := g.result()
+	if result == circle {
 		return -5000
 	}
-	if result == Cross {
+	if result == cross {
 		return 5000
 	}
 	return 0
 }
 
-func (g Game) negamax() int32 {
-	if g.is_game_ended() {
+func (g game) negamax() int32 {
+	if g.isGameEnded() {
 		return g.evaluate() * int32(g.turn)
 	}
 	var v int32 = -10000
-	for _, move := range g.get_legal_moves() {
-		g.set_tile(move)
+	for _, move := range g.legalMoves() {
+		g.setTitle(move)
 		v = max(v, -g.negamax())
 		g.takeback(move)
 	}
 	return v
 }
-func (g *Game) ai_play() {
+func (g *game) aiPlay() {
 	var v int32 = -10000
-	var best_move int8
-	for _, move := range g.get_legal_moves() {
-		g.set_tile(move)
+	var bestMove int8
+	for _, move := range g.legalMoves() {
+		g.setTitle(move)
 		score := max(v, -g.negamax())
 		g.takeback(move)
 		if score > v {
 			v = score
-			best_move = move
+			bestMove = move
 		}
 	}
-	g.set_tile(best_move)
+	g.setTitle(bestMove)
 }
 
-func (g *Game) play_vs_ai() {
+func (g *game) playVsAi() {
 	g.print()
-	for !g.is_game_ended() {
-		g.get_input()
-		if g.is_game_ended() {
+	for !g.isGameEnded() {
+		g.input()
+		if g.isGameEnded() {
 			g.print()
 			break
 		}
-		g.ai_play()
+		g.aiPlay()
 		g.print()
 	}
-	result := g.get_result()
-	if result == Circle {
-		fmt.Println("Circle wins!")
+	result := g.result()
+	if result == circle {
+		fmt.Println("circle wins!")
 	} else {
-		if result == Cross {
-			fmt.Println("Cross wins!")
+		if result == cross {
+			fmt.Println("cross wins!")
 		} else {
 			fmt.Println("Draw!")
 
@@ -205,7 +205,7 @@ func (g *Game) play_vs_ai() {
 }
 
 func main() {
-	var game Game
+	var game game
 	game.init()
-	game.play_vs_ai()
+	game.playVsAi()
 }
